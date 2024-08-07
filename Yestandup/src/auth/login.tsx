@@ -1,15 +1,18 @@
+import { Button } from '../components/button/button';
 import './login.scss';
 
 export const Login = ({ isLoggedIn, setIsLoggedIn }) => {
   const logIn = () => {
     setIsLoggedIn(true);
   };
+
+  const singUp = () => {};
   return (
     <>
       {!isLoggedIn && (
         <div className='login'>
-          <button onClick={logIn}>Log in</button>
-          <button>Sing up</button>
+          <Button mode='primary' label='Log In' onClick={logIn} />
+          <Button mode='primary' label='Sing up' onClick={singUp} />
         </div>
       )}
     </>

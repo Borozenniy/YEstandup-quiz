@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { Button } from '../button/button';
 import './header.scss';
 
 export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
@@ -13,7 +14,9 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
           <NavLink to={'/createquiz'}>Create Quiz</NavLink>
         </div>
         <div className='header__button'>
-          {isLoggedIn && <button onClick={logOut}>Log out</button>}
+          {isLoggedIn && (
+            <Button label='Log out' mode='primary' onClick={logOut} />
+          )}
         </div>
       </header>
     </>
