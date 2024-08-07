@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Outlet } from 'react-router';
 import { Login } from '../auth/login';
 import { Header } from '../components/header/header';
 //* do Fake Authentication
@@ -16,6 +17,9 @@ export const Root = () => {
       {isLoggedIn && (
         <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       )}
+      <main>
+        <Outlet />
+      </main>
       <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
     </>
   );

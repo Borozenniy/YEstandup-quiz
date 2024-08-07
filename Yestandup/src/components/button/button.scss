@@ -1,4 +1,11 @@
 .button {
+  padding: 10px;
+  border-radius: 15px;
+  background-color: #00df81;
+  &:hover {
+    cursor: pointer;
+    background-color: #2cc295;
+  }
   &-text {
   }
 

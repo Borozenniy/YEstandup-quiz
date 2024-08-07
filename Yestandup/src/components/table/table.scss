@@ -1,0 +1,15 @@
+.quiz-table {
+  td,
+  th {
+    border: 1px solid black;
+    padding: 5px;
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &--transparent {
+    background-color: transparent;
+  }
+}

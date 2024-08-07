@@ -1,6 +1,8 @@
 #root {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  //justify-content: center;
+  flex-direction: column;
   height: 100vh;
   background: url('../assets//background//FrontSide.png') no-repeat center top;
   background-size: cover;

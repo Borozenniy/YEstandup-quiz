@@ -10,7 +10,14 @@ export const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     <>
       <header className='header'>
         <div className='header__navigation'>
-          <NavLink to={'/playquiz'}>Play Quiz</NavLink>
+          <NavLink
+            className={({ isActive, isPending }) =>
+              isActive ? 'active' : isPending ? 'pending' : ''
+            }
+            to={'/playquiz'}
+          >
+            Play Quiz
+          </NavLink>
           <NavLink to={'/createquiz'}>Create Quiz</NavLink>
         </div>
         <div className='header__button'>
