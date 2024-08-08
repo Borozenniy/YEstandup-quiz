@@ -4,6 +4,12 @@ import e from 'cors';
 
 type TableProps = {
   table: any;
+  tableParameters: TableParametersProps;
+  transparentBackground: boolean;
+  fontSize: number;
+};
+
+type TableParametersProps = {
   transparentBackground: boolean;
   fontSize: number;
 };
@@ -14,15 +20,13 @@ type TableProps = {
 //  { rowName: 'Row 3', columns: ['Column 1', 'Column 2', 'Column 3'] },
 //];
 
-export const Table = ({
-  table,
-  transparentBackground,
-  fontSize,
-}: TableProps) => {
+export const Table = ({ table, tableParameters }: TableProps) => {
   const [editedRow, setEditedRow] = useState<number | null>(null);
   const [editedColumn, setEditedColumn] = useState<number | null>(null);
   const [newCellValue, setNewCellValue] = useState('');
-  const isTransparent = transparentBackground ? 'quiz-table--transparent' : '';
+  const isTransparent = tableParameters.transparentBackground
+    ? 'quiz-table--transparent'
+    : '';
 
   const handleCellClick = (
     rowIndex: number,
@@ -48,7 +52,7 @@ export const Table = ({
   return (
     <table
       className={`quiz-table ${isTransparent}`}
-      style={{ fontSize: Number(fontSize) + 'px' }}
+      style={{ fontSize: Number(tableParameters.fontSize) + 'px' }}
     >
       <tbody>
         {table.map((row, rowIndex) => (
@@ -64,7 +68,9 @@ export const Table = ({
                 {columnIndex === editedColumn && rowIndex === editedRow ? (
                   <input
                     type='text'
-                    style={{ fontSize: Number(fontSize) + 'px' }}
+                    style={{
+                      fontSize: Number(tableParameters.fontSize) + 'px',
+                    }}
                     value={newCellValue}
                     autoFocus
                     onChange={handleSetCellValueChange}

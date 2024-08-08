@@ -3,7 +3,7 @@ import './button.scss';
 type ButtonProps = {
   mode: 'text' | 'primary';
   label: string;
-  size: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   onClick?: () => void;
 };
