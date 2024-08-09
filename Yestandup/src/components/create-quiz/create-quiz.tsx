@@ -17,14 +17,19 @@ export const CreateQuiz = () => {
   });
   const [sliderRowsValue, setSliderRowsValue] = useState(3);
   const [sliderColumnsValue, setSliderColumnsValue] = useState(3);
+  const [backgroundColor, setBackgroundColor] = useState('#fff');
   const [isBackgroundTransparent, setIsBackgroundTransparent] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   //* Values for the table column
   const [columnValues, setColumnValues] = useState('');
-  const [columnIndex, setColumnIndex] = useState<number | null>(null);
+  const [columnIndex, setColumnIndex] = useState(1);
 
   const tableColumns = table[0].columns;
 
+  const clearColumnValues = () => {
+    setColumnValues('');
+    setColumnIndex(1);
+  };
   const changeSliderRowsValue = (e) => {
     setSliderRowsValue(e.target.value);
   };
@@ -39,6 +44,10 @@ export const CreateQuiz = () => {
 
   const changeBackgroundTransparent = () => {
     setIsBackgroundTransparent(!isBackgroundTransparent);
+  };
+
+  const changeBackgroundColor = (e) => {
+    setBackgroundColor(e.target.value);
   };
 
   const nextStep = () => {
@@ -80,6 +89,7 @@ export const CreateQuiz = () => {
     //  column = columnValues;
     //});
     setTable(updatedTable);
+    clearColumnValues();
   };
 
   useEffect(() => {
@@ -87,8 +97,9 @@ export const CreateQuiz = () => {
       ...tableParameters,
       transparentBackground: isBackgroundTransparent,
       fontSize,
+      backgroundColor,
     });
-  }, [isBackgroundTransparent, fontSize]);
+  }, [isBackgroundTransparent, fontSize, backgroundColor]);
 
   useEffect(() => {
     createTable();
@@ -100,15 +111,19 @@ export const CreateQuiz = () => {
     });
   */
 
-  useEffect(() => {
-    if (columnIndex !== null && columnValues !== '') {
-      updateColumnValues(columnIndex, columnValues);
-    }
-  }, [columnValues, columnIndex]);
+  //useEffect(() => {
+  //  if (columnIndex !== null && columnValues !== '') {
+  //    updateColumnValues(columnIndex, columnValues);
+  //  }
+  //}, [columnValues, columnIndex]);
   return (
     <div className='create-quiz'>
       <div className='create-quiz__modification'>
-        <h1>Create Quiz</h1>
+        <div className='create-quiz__stages'>
+          <span className='create-quiz__stage'>Creating Quiz</span>
+          <span className='create-quiz__stage'>Editing Quiz</span>
+          <span className='create-quiz__stage'>Finishing</span>
+        </div>
         <span> Rows : {sliderRowsValue}</span>
         <input
           type='range'
@@ -153,8 +168,22 @@ export const CreateQuiz = () => {
             value={columnValues}
             onChange={changeColumnValues}
           />
+          <Button
+            disabled={columnValues === ''}
+            label='Update column '
+            mode='primary'
+            onClick={() => updateColumnValues(columnIndex, columnValues)}
+          />
         </div>
         <div>
+          <span> Background Color: </span>
+          <input
+            type='color'
+            name='color'
+            id='color'
+            value={backgroundColor}
+            onChange={changeBackgroundColor}
+          />
           <span>
             Background transparent : {isBackgroundTransparent ? 'Yes' : 'No'}
           </span>
