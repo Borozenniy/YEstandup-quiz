@@ -52,6 +52,12 @@
   }
 }
 
+.upload-image {
+  &--hidden {
+    display: none;
+  }
+}
+
 table {
   ////margin-top: 300px;
   //width: 50%;
