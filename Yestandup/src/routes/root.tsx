@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Outlet } from 'react-router';
 import { Login } from '../auth/login';
 import { Header } from '../components/header/header';
