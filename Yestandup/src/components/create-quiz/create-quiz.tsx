@@ -7,7 +7,7 @@ const tableExample = [
   {
     rowName: 'Row 1',
     columns: [
-      { name: 'Column 1', question: 'Question 1', answer: 'Answer 1' },
+      { name: 'Column 1', question: '', answer: '' },
       { name: 'Column 2', question: 'Question 2', answer: 'Answer 2' },
       { name: 'Column 3', question: 'Question 3', answer: 'Answer 3' },
     ],
@@ -50,6 +50,9 @@ export const CreateQuiz = () => {
   //? for second stage of creating quiz
   const [tableCell, setTableCell] = useState<TableCell>({ row: 0, column: 0 });
   //?
+
+  const [maximumRows, setMaximumRows] = useState(3);
+  const [maximumColumns, setMaximumColumns] = useState(3);
 
   //? question and answer
   const [question, setQuestion] = useState('');
@@ -164,12 +167,31 @@ export const CreateQuiz = () => {
     clearColumnValues();
   };
 
-  const nextQuestion = () => {
-    console.log('Next Question');
-  };
+  //const checkIsTableFilled = () => {
+  //  if (table.length === 0) {
+  //    return false;
+  //  }
+  //};
+  //console.log(table.length === 0);
 
   const previousQuestion = () => {
-    console.log('Previous Question');
+    if (table.length === 0 || (tableCell.row === 0 && tableCell.column === 0))
+      return;
+    tableCell.column === 0
+      ? setTableCell({ row: tableCell.row - 1, column: maximumColumns - 1 })
+      : setTableCell({ row: tableCell.row, column: tableCell.column - 1 });
+  };
+
+  const nextQuestion = () => {
+    if (
+      table.length === 0 ||
+      (tableCell.row === maximumRows - 1 &&
+        tableCell.column === maximumColumns - 1)
+    )
+      return;
+    tableCell.column === maximumColumns - 1
+      ? setTableCell({ row: tableCell.row + 1, column: 0 })
+      : setTableCell({ row: tableCell.row, column: tableCell.column + 1 });
   };
 
   const changeQuestion = (e) => {
@@ -181,11 +203,13 @@ export const CreateQuiz = () => {
   };
 
   const saveQuestionAndAnswer = () => {
-    const updatedTable = [...table];
-    updatedTable[tableCell.row].columns[tableCell.column].question = question;
-    updatedTable[tableCell.row].columns[tableCell.column].answer = answer;
-    setTable(updatedTable);
-    clearCellValues();
+    if (tableCell.row !== null && tableCell.column !== null) {
+      const updatedTable = [...table];
+      updatedTable[tableCell.row].columns[tableCell.column].question = question;
+      updatedTable[tableCell.row].columns[tableCell.column].answer = answer;
+      setTable(updatedTable);
+      clearCellValues();
+    }
   };
   const clearCellValues = () => {
     setQuestion('');
@@ -208,6 +232,13 @@ export const CreateQuiz = () => {
       backgroundColor,
     });
   }, [isBackgroundTransparent, fontSize, backgroundColor]);
+
+  useEffect(() => {
+    if (table.length > 0) {
+      setMaximumRows(table.length);
+      setMaximumColumns(table[0].columns.length);
+    }
+  }, [table]);
 
   useEffect(() => {
     createTable();
@@ -247,7 +278,9 @@ export const CreateQuiz = () => {
                   onClick={nextQuestion}
                 />
                 <div>
-                  <p>Question</p>
+                  <p>
+                    Question {tableCell.column + 1} / {maximumColumns}
+                  </p>
                   <input
                     type='text'
                     placeholder='Question'
