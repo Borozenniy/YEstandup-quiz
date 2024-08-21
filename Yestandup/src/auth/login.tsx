@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { ModalContext } from '../modal/modal-provider';
 import { Button } from '../components/button/button';
 import './login.scss';
 import { set } from 'mongoose';
@@ -15,6 +16,11 @@ import { set } from 'mongoose';
 
 export const Login = ({ isLoggedIn, setIsLoggedIn }) => {
   const [userData, setUserData] = useState({ name: 'no name' });
+  const { openModal, closeModal } = useContext(ModalContext) as any;
+
+  const openLoginModal = () => {
+    openModal(<Button mode='primary' label='Log In' onClick={logIn} />);
+  };
   const logIn = () => {
     //setIsLoggedIn(true);
     const user = { name: 'TESTNAME', password: '12345' };
@@ -55,7 +61,7 @@ export const Login = ({ isLoggedIn, setIsLoggedIn }) => {
     <>
       {!isLoggedIn && (
         <div className='login'>
-          <Button mode='primary' label='Log In' onClick={logIn} />
+          <Button mode='primary' label='Log In' onClick={openLoginModal} />
           <Button label={userData.name} />
           <Button mode='primary' label='Sing up' onClick={singUp} />
         </div>

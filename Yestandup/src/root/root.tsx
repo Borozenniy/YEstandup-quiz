@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ModalProvider } from '../modal/modal-provider';
 import { Outlet } from 'react-router';
 import { Login } from '../auth/login';
 import { Header } from '../components/header/header';
@@ -13,14 +14,16 @@ export const Root = () => {
   //}, [isLoggedIn, navigate]);
 
   return (
-    <>
-      {isLoggedIn && (
-        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      )}
-      <main>
-        <Outlet />
-      </main>
-      <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-    </>
+    <div>
+      <ModalProvider>
+        {isLoggedIn && (
+          <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        )}
+        <main>
+          <Outlet />
+        </main>
+        <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      </ModalProvider>
+    </div>
   );
 };

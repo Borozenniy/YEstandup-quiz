@@ -1,0 +1,97 @@
+//.modal {
+//  position: fixed;
+//  left: 0;
+//  top: 0;
+//  right: 0;
+//  bottom: 0;
+//  background-color: gray;
+//  display: flex;
+//  align-items: center;
+//  justify-content: center;
+//  opacity: 0;
+//  transition: opacity 0.3s ease-in-out;
+//  pointer-events: none;
+
+//  .show {
+//    z-index: 99;
+//    pointer-events: visible;
+//    opacity: 1;
+//  }
+
+//  &__content {
+//  }
+//}
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
+
+  &.show {
+    opacity: 1;
+    pointer-events: visible;
+    z-index: 99;
+  }
+
+  &.exit {
+    opacity: 0;
+  }
+
+  &__close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    cursor: pointer;
+    color: var(--outline-variant);
+    font-size: 22px;
+    z-index: 3;
+    padding-left: 0px;
+  }
+
+  &__content {
+    max-width: 750px;
+    position: relative;
+    background-color: var(--white);
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    max-width: 60vw;
+
+    p {
+      //@include body-large;
+      color: var(--neutral-variant20);
+    }
+
+    li {
+      //@include body-large;
+      color: var(--neutral-variant20);
+    }
+
+    strong {
+      //@include body-large-bold;
+      color: var(--neutral-variant20);
+    }
+
+    .tabs-header__tab {
+      //@include title-medium;
+    }
+  }
+
+  &__body {
+    margin-top: 0px;
+    border-radius: 8px;
+    overflow: scroll;
+    max-height: 80vh;
+  }
+}
+
+.body-no-scroll {
+  overflow: hidden;
+}
