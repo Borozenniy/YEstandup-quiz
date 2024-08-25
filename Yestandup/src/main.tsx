@@ -1,14 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Auth0Provider } from '@auth0/auth0-react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-//import App from './App.tsx';
+import { Login } from './auth/login.tsx';
 import { Root } from './root/root.tsx';
 import { PlayQuiz } from './components/play-quiz/play-quiz.tsx';
 import { CreateQuiz } from './components/create-quiz/create-quiz.tsx';
+import { getConfig } from '../config.ts';
 import './index.css';
+import './styles/variable.scss';
 //*
 //import { useState } from 'react';
-//import { Outlet } from 'react-router';
+import { Outlet } from 'react-router';
 //import { Login } from '../auth/login';
 //import { Header } from '../components/header/header';
 ////* do Fake Authentication
@@ -35,19 +38,78 @@ import './index.css';
 //};
 
 //*
-//const AuthLayout = () => {};
-const router = createBrowserRouter([
-  {
-    element: <Root />,
-    path: '/',
-    children: [
-      {
+
+const { domain, clientId } = getConfig();
+/*
+ return (
+    <Auth0Provider
+      domain={domain}
+      clientId={clientId}
+      authorizationParams='http://localhost:5173/app'
+    >
+      <main>
+        <Outlet />
+      </main>
+    </Auth0Provider>
+  );
+*/
+
+const Auth0ProviderLayout = () => {
+  return (
+    <Auth0Provider
+      domain='dev-wi1dwf0z2pg8534i.us.auth0.com'
+      clientId='jg0udrv3PJ0s7yMIEfJpUJymcjp2EoSK'
+      authorizationParams={{
+        redirect_uri: window.location.origin + '/app',
+      }}
+    >
+      <Outlet />
+    </Auth0Provider>
+  );
+};
+
+/*
+
+    {
         element: <PlayQuiz />,
         path: 'playquiz',
       },
       {
         element: <CreateQuiz />,
         path: 'createquiz',
+      },
+*/
+/*
+element: <Root />,
+    path: '/',
+    children: 
+*/
+export const router = createBrowserRouter([
+  {
+    element: <Auth0ProviderLayout />,
+    path: '/',
+    children: [
+      {
+        element: <Login />,
+        path: 'login',
+      },
+      {
+        element: <Login />,
+        path: '',
+      },
+      {
+        element: <Root />,
+        path: 'app',
+        children: [
+          {
+            element: <PlayQuiz />,
+            path: 'playquiz',
+          },
+          {
+            element: <CreateQuiz />,
+            path: 'createquiz',
+          },
+        ],
       },
     ],
   },

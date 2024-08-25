@@ -176,4 +176,12 @@ export const Table = ({
       </table>
     );
   }
+
+  if (mode === 'finish') {
+    return (
+      <div>
+        <h1>Finish</h1>
+      </div>
+    );
+  }
 };

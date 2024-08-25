@@ -1,6 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { router } from '../main.tsx';
 import { ModalContext } from '../modal/modal-provider';
+import { LoginButton } from '../components/login-button/login-button';
+import { LogoutButton } from '../components/login-button/logout-button.tsx';
 import { Button } from '../components/button/button';
+//import { LoginPage } from '../components/pages/login';
 import './login.scss';
 import { set } from 'mongoose';
 
@@ -14,13 +19,12 @@ import { set } from 'mongoose';
 //  }
 //};
 
-export const Login = ({ isLoggedIn, setIsLoggedIn }) => {
-  const [userData, setUserData] = useState({ name: 'no name' });
-  const { openModal, closeModal } = useContext(ModalContext) as any;
+export const Login = () => {
+  const { isAuthenticated, isLoading, user } = useAuth0();
 
-  const openLoginModal = () => {
-    openModal(<Button mode='primary' label='Log In' onClick={logIn} />);
-  };
+  //const openLoginModal = () => {
+  //  openModal(<LoginPage />);
+  //};
   const logIn = () => {
     //setIsLoggedIn(true);
     const user = { name: 'TESTNAME', password: '12345' };
@@ -56,16 +60,20 @@ export const Login = ({ isLoggedIn, setIsLoggedIn }) => {
     fetchData();
   }, []);
 
-  const singUp = () => {};
-  return (
-    <>
-      {!isLoggedIn && (
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+    router.navigate('/app');
+  }, [isAuthenticated]);
+
+  if (!isAuthenticated) {
+    return (
+      <>
         <div className='login'>
-          <Button mode='primary' label='Log In' onClick={openLoginModal} />
-          <Button label={userData.name} />
-          <Button mode='primary' label='Sing up' onClick={singUp} />
+          <LoginButton />
         </div>
-      )}
-    </>
-  );
+      </>
+    );
+  }
 };

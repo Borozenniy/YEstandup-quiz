@@ -19,16 +19,32 @@ const Modal = () => {
     }
   };
   const handleCloseModal = () => {
-    if (modalNotDismissible) return;
+    //if (modalNotDismissible) return;
     closeModal();
   };
 
   useEffect(() => {
-    document.addEventListener('keydoww', closeOnEscapeKeyDown);
+    document.body.addEventListener('keydown', closeOnEscapeKeyDown);
     return function cleanup() {
-      document.removeEventListener('keydown', closeOnEscapeKeyDown);
+      document.body.removeEventListener('keydown', closeOnEscapeKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    if (showModal) {
+      document.body.classList.add('body-no-scroll');
+    } else {
+      document.body.classList.remove('body-no-scroll');
+    }
+  }, [showModal]);
+
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [showModal]);
 
   if (showModal) {
     return createPortal(

@@ -8,24 +8,24 @@ const tableExample = [
     rowName: 'Row 1',
     columns: [
       { name: 'Column 1', question: '', answer: '' },
-      { name: 'Column 2', question: 'Question 2', answer: 'Answer 2' },
-      { name: 'Column 3', question: 'Question 3', answer: 'Answer 3' },
+      { name: 'Column 2', question: 'Question 2', answer: '' },
+      { name: 'Column 3', question: 'Question 3', answer: '' },
     ],
   },
   {
     rowName: 'Row 2',
     columns: [
-      { name: 'Column 1', question: 'Question 1', answer: 'Answer 1' },
-      { name: 'Column 2', question: 'Question 2', answer: 'Answer 2' },
-      { name: 'Column 3', question: 'Question 3', answer: 'Answer 3' },
+      { name: 'Column 1', question: 'Question 1', answer: '' },
+      { name: 'Column 2', question: 'Question 2', answer: '' },
+      { name: 'Column 3', question: 'Question 3', answer: '' },
     ],
   },
   {
     rowName: 'Row 3',
     columns: [
-      { name: 'Column 1', question: 'Question 1', answer: 'Answer 1' },
-      { name: 'Column 2', question: 'Question 2', answer: 'Answer 2' },
-      { name: 'Column 3', question: 'Question 3', answer: 'Answer 3' },
+      { name: 'Column 1', question: 'Question 1', answer: '' },
+      { name: 'Column 2', question: 'Question 2', answer: '' },
+      { name: 'Column 3', question: 'Question 3', answer: '' },
     ],
   },
 ];
@@ -75,6 +75,7 @@ export const CreateQuiz = () => {
   const [columnIndex, setColumnIndex] = useState(1);
 
   const tableColumns = table[0].columns;
+  console.log(currentTableMode);
 
   const clearColumnValues = () => {
     setColumnValues('');
@@ -100,12 +101,21 @@ export const CreateQuiz = () => {
     setBackgroundColor(e.target.value);
   };
 
-  const nextStep = () => {
-    setCurrentTableMode(tableMode[1]);
-    setIsCreating(true);
+  const handleNextStep = () => {
+    if (currentTableMode === 'create') {
+      setCurrentTableMode(tableMode[1]);
+      setIsCreating(true);
+    }
+    if (currentTableMode === 'edit') {
+      setCurrentTableMode(tableMode[2]);
+    }
   };
 
-  const backStep = () => {
+  const handleBackStep = () => {
+    if (currentTableMode === 'finish') {
+      setCurrentTableMode(tableMode[1]);
+      setIsCreating(false);
+    }
     setCurrentTableMode(tableMode[0]);
     setIsCreating(false);
     console.log('Back Step');
@@ -146,7 +156,7 @@ export const CreateQuiz = () => {
         row.columns.push({
           name: `Column ${j + 1}`,
           question: `Question ${j + 1}`,
-          answer: `Answer ${j + 1}`,
+          answer: '',
         });
       }
       table.push(row);
@@ -430,10 +440,10 @@ export const CreateQuiz = () => {
           <Button
             label='Back'
             mode='primary'
-            onClick={backStep}
+            onClick={handleBackStep}
             disabled={!isCreating}
           />
-          <Button label='Next Step' mode='primary' onClick={nextStep} />
+          <Button label='Next Step' mode='primary' onClick={handleNextStep} />
         </div>
       </div>
       <div className='create-quiz__table'>
