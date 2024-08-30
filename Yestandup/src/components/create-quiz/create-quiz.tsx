@@ -1,34 +1,38 @@
 import { useState, useEffect } from 'react';
+import { createQuiz } from '../../services/api/create-quiz.js';
 import { Table } from '../table/table';
 import { Button } from '../button/button';
 import './create-quiz.scss';
 
-const tableExample = [
-  {
-    rowName: 'Row 1',
-    columns: [
-      { name: 'Column 1', question: '', answer: '' },
-      { name: 'Column 2', question: 'Question 2', answer: '' },
-      { name: 'Column 3', question: 'Question 3', answer: '' },
-    ],
-  },
-  {
-    rowName: 'Row 2',
-    columns: [
-      { name: 'Column 1', question: 'Question 1', answer: '' },
-      { name: 'Column 2', question: 'Question 2', answer: '' },
-      { name: 'Column 3', question: 'Question 3', answer: '' },
-    ],
-  },
-  {
-    rowName: 'Row 3',
-    columns: [
-      { name: 'Column 1', question: 'Question 1', answer: '' },
-      { name: 'Column 2', question: 'Question 2', answer: '' },
-      { name: 'Column 3', question: 'Question 3', answer: '' },
-    ],
-  },
-];
+const tableExample = {
+  quizName: 'Change name',
+  quiz: [
+    {
+      rowName: 'Row 1',
+      columns: [
+        { name: 'Column 1', question: '3', answer: '3' },
+        { name: 'Column 2', question: 'Question 2', answer: '3' },
+        { name: 'Column 3', question: 'Question 3', answer: '3' },
+      ],
+    },
+    {
+      rowName: 'Row 2',
+      columns: [
+        { name: 'Column 1', question: 'Question 1', answer: '3' },
+        { name: 'Column 2', question: 'Question 2', answer: '3' },
+        { name: 'Column 3', question: 'Question 3', answer: '3' },
+      ],
+    },
+    {
+      rowName: 'Row 3',
+      columns: [
+        { name: 'Column 1', question: 'Question 1', answer: '3' },
+        { name: 'Column 2', question: 'Question 2', answer: '3' },
+        { name: 'Column 3', question: 'Question 3', answer: '3' },
+      ],
+    },
+  ],
+};
 
 const tableMode = ['create', 'edit', 'finish'];
 
@@ -39,7 +43,8 @@ type TableCell = {
 
 export const CreateQuiz = () => {
   //TODO: rebuid this to more comfortable system with Tabs
-  const [isCreating, setIsCreating] = useState(false);
+  //const [isCreating, setIsCreating] = useState(false);
+  const [quizName, setQuizName] = useState(tableExample.quizName);
   //*
 
   //* file upload
@@ -74,8 +79,53 @@ export const CreateQuiz = () => {
   const [columnValues, setColumnValues] = useState('');
   const [columnIndex, setColumnIndex] = useState(1);
 
-  const tableColumns = table[0].columns;
+  console.log(table.quiz);
+  const quizStage = (mode: string) => {
+    switch (mode) {
+      case 'create':
+        return (
+          <>
+            <span className='create-quiz__stage create-quiz__stage-active'>
+              Creating Quiz
+            </span>
+            <span className='create-quiz__stage'>Editing Quiz</span>
+            <span className='create-quiz__stage'>Finishing</span>
+          </>
+        );
+
+      case 'edit':
+        return (
+          <>
+            <span className='create-quiz__stage'>Creating Quiz</span>
+            <span className='create-quiz__stage create-quiz__stage-active'>
+              Editing Quiz
+            </span>
+            <span className='create-quiz__stage'>Finishing</span>
+          </>
+        );
+      case 'finish':
+        return (
+          <>
+            <span className='create-quiz__stage'>Creating Quiz</span>
+            <span className='create-quiz__stage'>Editing Quiz</span>
+            <span className='create-quiz__stage create-quiz__stage-active'>
+              Finishing
+            </span>
+          </>
+        );
+    }
+  };
+
+  const tableColumns = table.quiz[0].columns;
   console.log(currentTableMode);
+
+  const changeQuizName = (e: any) => {
+    setQuizName(e.target.value);
+  };
+
+  const saveQuizName = () => {
+    setTable({ ...table, quizName: quizName });
+  };
 
   const clearColumnValues = () => {
     setColumnValues('');
@@ -104,7 +154,6 @@ export const CreateQuiz = () => {
   const handleNextStep = () => {
     if (currentTableMode === 'create') {
       setCurrentTableMode(tableMode[1]);
-      setIsCreating(true);
     }
     if (currentTableMode === 'edit') {
       setCurrentTableMode(tableMode[2]);
@@ -114,10 +163,8 @@ export const CreateQuiz = () => {
   const handleBackStep = () => {
     if (currentTableMode === 'finish') {
       setCurrentTableMode(tableMode[1]);
-      setIsCreating(false);
     }
     setCurrentTableMode(tableMode[0]);
-    setIsCreating(false);
     console.log('Back Step');
   };
 
@@ -145,7 +192,7 @@ export const CreateQuiz = () => {
   };
 
   const createTable = () => {
-    const table = [];
+    const newTable = [];
 
     for (let i = 0; i < sliderRowsValue; i++) {
       const row = {
@@ -159,21 +206,21 @@ export const CreateQuiz = () => {
           answer: '',
         });
       }
-      table.push(row);
+      newTable.push(row);
     }
 
-    setTable(table);
+    setTable({ ...table, quiz: newTable });
   };
 
   const updateColumnValues = (columnIndex: number, columnValue: string) => {
-    const updatedTable = [...table];
+    const updatedTable = table.quiz;
     updatedTable.map((row) => {
-      row.columns[columnIndex - 1] = columnValue;
+      row.columns[columnIndex - 1].name = columnValue;
     });
     //updatedTable[0].columns.map((column, index) => {
     //  column = columnValues;
     //});
-    setTable(updatedTable);
+    setTable({ ...table, quiz: updatedTable });
     clearColumnValues();
   };
 
@@ -211,14 +258,14 @@ export const CreateQuiz = () => {
   const changeAnswer = (e) => {
     setAnswer(e.target.value);
   };
-
   const saveQuestionAndAnswer = () => {
     if (tableCell.row !== null && tableCell.column !== null) {
-      const updatedTable = [...table];
+      const updatedTable = [...table.quiz];
       updatedTable[tableCell.row].columns[tableCell.column].question = question;
       updatedTable[tableCell.row].columns[tableCell.column].answer = answer;
-      setTable(updatedTable);
-      clearCellValues();
+      setTable({ ...table, quiz: updatedTable });
+      //clearCellValues();
+      nextQuestion();
     }
   };
   const clearCellValues = () => {
@@ -229,8 +276,8 @@ export const CreateQuiz = () => {
   //TODO: get row and column index separetely from
   useEffect(() => {
     if (tableCell.row !== null && tableCell.column !== null) {
-      setQuestion(table[tableCell.row].columns[tableCell.column].question);
-      setAnswer(table[tableCell.row].columns[tableCell.column].answer);
+      setQuestion(table.quiz[tableCell.row].columns[tableCell.column].question);
+      setAnswer(table.quiz[tableCell.row].columns[tableCell.column].answer);
     }
   }, [tableCell]);
 
@@ -244,11 +291,11 @@ export const CreateQuiz = () => {
   }, [isBackgroundTransparent, fontSize, backgroundColor]);
 
   useEffect(() => {
-    if (table.length > 0) {
-      setMaximumRows(table.length);
-      setMaximumColumns(table[0].columns.length);
+    if (table.quiz.length > 0) {
+      setMaximumRows(table.quiz.length);
+      setMaximumColumns(table.quiz[0].columns.length);
     }
-  }, [table]);
+  }, [table.quiz]);
 
   useEffect(() => {
     createTable();
@@ -265,53 +312,115 @@ export const CreateQuiz = () => {
   //    updateColumnValues(columnIndex, columnValues);
   //  }
   //}, [columnValues, columnIndex]);
+
+  const finishQuiz = () => {
+    createQuiz(tableExample);
+  };
+
+  const createQuiz = async (quiz) => {
+    const response = await fetch(`http://localhost:5000/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(quiz), // Тут quiz вже є tableExample
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  };
+
+  const sendQuiz = () => {
+    //const user = { name: 'TESTNAME', password: '12345' };
+    //createUser(user);
+    createUser(table);
+  };
+
+  const createUser = async (quiz) => {
+    const response = await fetch(`http://localhost:5000/quiz/create-quiz`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(quiz),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  };
+
+  //const createQuiz = async (quiz) => {
+  //    const response = await fetch(`http://localhost:5000/quiz/create-quiz`, {
+  //      method: 'POST',
+  //      headers: {
+  //        'Content-Type': 'application/json',
+  //      },
+  //      body: JSON.stringify(quiz),  // Тут quiz вже є tableExample
+  //    });
+
+  //    if (!response.ok) {
+  //      throw new Error('Network response was not ok');
+  //    }
+  //    return response.json();
+  //  };
+
   return (
     <div className='create-quiz'>
       <div className='create-quiz__modification'>
-        <div className='create-quiz__stages'>
-          <span className='create-quiz__stage'>Creating Quiz</span>
-          <span className='create-quiz__stage'>Editing Quiz</span>
-          <span className='create-quiz__stage'>Finishing</span>
-        </div>
-        {isCreating ? (
-          <>
+        <div className='create-quiz__stages'>{quizStage(currentTableMode)}</div>
+        {currentTableMode === 'finish' && (
+          <div>
+            <h2>Gsss</h2>
+          </div>
+        )}
+        {currentTableMode === 'edit' && (
+          <div>
             <div>
+              <Button
+                label='Previous question'
+                mode='primary'
+                onClick={previousQuestion}
+              />
+              <Button
+                label='Next question'
+                mode='primary'
+                onClick={nextQuestion}
+              />
               <div>
-                <Button
-                  label='Previous question'
-                  mode='primary'
-                  onClick={previousQuestion}
-                />
-                <Button
-                  label='Next question'
-                  mode='primary'
-                  onClick={nextQuestion}
-                />
-                <div>
+                {tableCell.column === null ? (
+                  <div>
+                    <p>Pick a cell</p>
+                  </div>
+                ) : (
                   <p>
                     Question {tableCell.column + 1} / {maximumColumns}
                   </p>
-                  <input
-                    type='text'
-                    placeholder='Question'
-                    value={question}
-                    onChange={changeQuestion}
-                  />
-                  <p>Answer</p>
-                  <input
-                    type='text'
-                    placeholder='Answer'
-                    value={answer}
-                    onChange={changeAnswer}
-                  />
-                  <Button
-                    label='Save'
-                    mode='primary'
-                    onClick={saveQuestionAndAnswer}
-                    disabled={!question || !answer}
-                  />
-                </div>
-                {/*<div>
+                )}
+                <input
+                  type='text'
+                  placeholder='Question'
+                  value={question}
+                  onChange={changeQuestion}
+                />
+                <p>Answer</p>
+                <input
+                  type='text'
+                  placeholder='Answer'
+                  value={answer}
+                  onChange={changeAnswer}
+                />
+                <Button
+                  label='Save'
+                  mode='primary'
+                  onClick={saveQuestionAndAnswer}
+                  disabled={!question || !answer}
+                />
+              </div>
+              {/*<div>
                   <p>Donwload image</p>
                   <input
                     type='file'
@@ -339,7 +448,7 @@ export const CreateQuiz = () => {
                     </div>
                   )}
                 </div>*/}
-                {/*<div>
+              {/*<div>
                   <p>Answer</p>
                   <input
                     type='text'
@@ -354,11 +463,19 @@ export const CreateQuiz = () => {
                     <pre>{fileContent}</pre>
                   </div>
                 )}*/}
-              </div>
             </div>
-          </>
-        ) : (
-          <>
+          </div>
+        )}
+        {currentTableMode === 'create' && (
+          <div>
+            <span>Quiz Name</span>
+            <input type='text' value={quizName} onChange={changeQuizName} />
+            <Button
+              label='Save quiz name'
+              mode='primary'
+              onClick={saveQuizName}
+              disabled={!quizName || quizName === table.quizName}
+            />
             <span> Rows : {sliderRowsValue}</span>
             <input
               type='range'
@@ -433,7 +550,7 @@ export const CreateQuiz = () => {
                 //onChange={changeBackgroundTransparent}
               />
             </div>
-          </>
+          </div>
         )}
 
         <div>
@@ -441,21 +558,25 @@ export const CreateQuiz = () => {
             label='Back'
             mode='primary'
             onClick={handleBackStep}
-            disabled={!isCreating}
+            disabled={currentTableMode === 'create'}
           />
-          <Button label='Next Step' mode='primary' onClick={handleNextStep} />
+          {currentTableMode === 'finish' ? (
+            <Button label='Finish Quiz' mode='primary' onClick={sendQuiz} />
+          ) : (
+            <Button label='Next Step' mode='primary' onClick={handleNextStep} />
+          )}
         </div>
-      </div>
-      <div className='create-quiz__table'>
-        <Table
-          table={table}
-          tableParameters={tableParameters}
-          mode={currentTableMode}
-          tableCell={tableCell}
-          setTableCell={setTableCell}
-          //columns={['Column 1', 'Column 2', 'Column 3']}
-          //rows={[1, 2, 3]}
-        />
+        <div className='create-quiz__table'>
+          <Table
+            table={table}
+            tableParameters={tableParameters}
+            mode={currentTableMode}
+            tableCell={tableCell}
+            setTableCell={setTableCell}
+            //columns={['Column 1', 'Column 2', 'Column 3']}
+            //rows={[1, 2, 3]}
+          />
+        </div>
       </div>
     </div>
   );

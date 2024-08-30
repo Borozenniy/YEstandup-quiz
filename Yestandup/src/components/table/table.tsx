@@ -34,6 +34,8 @@ export const Table = ({
   tableCell,
   setTableCell,
 }: TableProps) => {
+  console.log(table);
+
   const [editedRow, setEditedRow] = useState<number | null>(null);
   const [editedColumn, setEditedColumn] = useState<number | null>(null);
   const [newCellValue, setNewCellValue] = useState('');
@@ -90,6 +92,9 @@ export const Table = ({
     console.log(row, column);
     setTableCell({ row, column });
   };
+  const isRowFullFilled = (row) => {
+    return row.columns.every((column) => column.question && column.answer);
+  };
 
   if (mode === 'create') {
     return (
@@ -103,7 +108,7 @@ export const Table = ({
         }}
       >
         <tbody>
-          {table.map((row, rowIndex) => (
+          {table.quiz.map((row, rowIndex) => (
             <tr key={rowIndex}>
               <td key={rowIndex}>
                 <span>{row.rowName}</span>
@@ -150,10 +155,13 @@ export const Table = ({
     return (
       <table className='quiz-table'>
         <tbody>
-          {table.map((row, rowIndex) => (
+          {table.quiz.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              <td key={rowIndex}>
-                <span>{row.rowName}</span>
+              <td
+                key={rowIndex}
+                className={`${isRowFullFilled(row) && 'td-finished'}`}
+              >
+                {row.rowName}
                 {/*{rowIndex === editedRow}*/}
               </td>
               {row.columns.map((column, columnIndex) => (
@@ -161,9 +169,10 @@ export const Table = ({
                   className={`${
                     rowIndex === tableCell.row &&
                     columnIndex === tableCell.column
-                      ? 'td--active'
+                      ? 'td-active'
                       : ''
-                  }`}
+                  }
+                  ${column.question && column.answer && 'td-finished'}`}
                   key={columnIndex}
                   onClick={() => pickQuestionToEdit(rowIndex, columnIndex)}
                 >

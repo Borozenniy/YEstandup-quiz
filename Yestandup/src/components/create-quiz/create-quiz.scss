@@ -35,10 +35,13 @@
   &__stage {
     width: 100%;
     padding: 20px;
+    border-radius: 10px;
     &:hover {
-      border-radius: 10px;
       background-color: #73aeda;
       cursor: pointer;
+    }
+    &-active {
+      background-color: red;
     }
   }
 
