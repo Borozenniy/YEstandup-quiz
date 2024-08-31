@@ -6,6 +6,11 @@ export const QuizCard = ({ quiz }) => {
     console.log('Pick Quiz');
   };
   console.log(quiz);
+  console.log(quiz.quiz[0].columns.length);
+  console.log(quiz.quiz.length);
+  const rowsAmount = quiz.quiz.length;
+  const columnsAmount = quiz.quiz[0].columns.length;
+  const questionsAmount = rowsAmount * columnsAmount;
   return (
     <div className='quiz-card'>
       {quiz.quizName && (
@@ -14,7 +19,9 @@ export const QuizCard = ({ quiz }) => {
             <h1>{quiz.quizName}</h1>
           </div>
           <div className='quiz-card__info'>
-            <p>quiz: {quiz.rows.length}</p>
+            <p>Amount of Questions: {questionsAmount}</p>
+            <p>Question Blocks: {rowsAmount}</p>
+            <p>Questins in Block: {columnsAmount}</p>
           </div>
         </>
       )}
