@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { createQuiz } from '../../services/api/create-quiz.js';
+import { createQuiz } from '../../services/api/quiz/quiz.js';
 import { Table } from '../table/table';
 import { Button } from '../button/button';
 import './create-quiz.scss';

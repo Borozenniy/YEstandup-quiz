@@ -4,14 +4,20 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Login } from './auth/login.tsx';
 import { Root } from './root/root.tsx';
+
 import { PlayQuiz } from './components/play-quiz/play-quiz.tsx';
 import { CreateQuiz } from './components/create-quiz/create-quiz.tsx';
+import { HostQuiz } from './components/host/host-quiz.tsx';
+import { JoinQuiz } from './components/join-quiz/join-quiz.tsx';
 import { getConfig } from '../config.ts';
 import './index.css';
 import './styles/variable.scss';
 //*
 //import { useState } from 'react';
 import { Outlet } from 'react-router';
+
+import { GameSession } from './game-session/game-session.tsx';
+import { CreateSession } from './game-session/create-session/create-session.tsx';
 //import { Login } from '../auth/login';
 //import { Header } from '../components/header/header';
 ////* do Fake Authentication
@@ -104,7 +110,18 @@ export const router = createBrowserRouter([
           {
             element: <PlayQuiz />,
             path: 'playquiz',
+            children: [
+              {
+                element: <GameSession />,
+                path: 'session/:id',
+              },
+              //{
+              //  element: <HostQuiz />,
+              //  path: 'host',
+              //},
+            ],
           },
+
           {
             element: <CreateQuiz />,
             path: 'createquiz',

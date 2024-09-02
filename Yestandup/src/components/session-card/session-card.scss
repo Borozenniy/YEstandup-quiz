@@ -1,4 +1,4 @@
-.quiz-card {
+.session-card {
   width: 380px;
   height: 360px;
   padding: 10px;
@@ -13,8 +13,17 @@
   }
 
   &__label {
+    //display: flex;
+    //justify-content: space-between;
+    //align-items: center;
+  }
+
+  &__qr-code {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
+    img {
+      max-width: 260px;
+      width: 100%;
+    }
   }
 }
