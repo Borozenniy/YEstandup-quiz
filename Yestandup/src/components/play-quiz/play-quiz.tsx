@@ -126,8 +126,8 @@ useEffect(() => {
       <div className='play-quiz__board'>
         {/*<Button label='Get Quizzes' mode='primary' onClick={fetchQuizzes} />*/}
         <div className='play-quiz__navigation'>
-          {/*<NavLink to='join'>Join a quiz</NavLink>
-          <NavLink to='host'>Host a quiz</NavLink>*/}
+          <NavLink to='join'>Join a quiz</NavLink>
+          <NavLink to='host'>Host a quiz</NavLink>
           {/*<Button
             label='Search for a session'
             mode='primary'

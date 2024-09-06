@@ -18,6 +18,11 @@ import { Outlet } from 'react-router';
 
 import { GameSession } from './game-session/game-session.tsx';
 import { CreateSession } from './game-session/create-session/create-session.tsx';
+import { HostSession } from './game-session/host-session/host-session.tsx';
+import { HostGameSession } from './game-session/ host-game-session/host-game-session.tsx';
+import { JoinGameSession } from './game-session/join-game-session.tsx';
+import { JoinSessionIo } from './game-session/join-session-io.tsx';
+import { JoinWithoutLogin } from './game-session/join-session/join-without-login.tsx';
 //import { Login } from '../auth/login';
 //import { Header } from '../components/header/header';
 ////* do Fake Authentication
@@ -69,6 +74,7 @@ const Auth0ProviderLayout = () => {
         redirect_uri: window.location.origin + '/app',
       }}
     >
+      <JoinWithoutLogin />
       <Outlet />
     </Auth0Provider>
   );
@@ -111,15 +117,27 @@ export const router = createBrowserRouter([
             element: <PlayQuiz />,
             path: 'playquiz',
             children: [
+              { element: <PlayQuiz />, path: 'join' },
               {
-                element: <GameSession />,
-                path: 'session/:id',
+                element: <HostQuiz />,
+                path: 'host',
+                children: [
+                  {
+                    element: <HostGameSession />,
+                    path: ':id',
+                  },
+                  //{ element: <HostSession />, path: 'session/:id' },
+                ],
               },
-              //{
-              //  element: <HostQuiz />,
-              //  path: 'host',
-              //},
             ],
+          },
+          {
+            element: <GameSession />,
+            path: 'session/:id',
+          },
+          {
+            element: <JoinSessionIo />,
+            path: 'join/session/:id',
           },
 
           {

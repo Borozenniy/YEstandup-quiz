@@ -6,7 +6,7 @@ export const QuizCard = ({ quiz }) => {
   const navigate = useNavigate();
 
   const pickQuizToHost = () => {
-    navigate(`/app/host/session`);
+    navigate(`/app/playquiz/host/${quiz._id}`);
   };
   //console.log(quiz);
   //console.log(quiz.quiz[0].columns.length);

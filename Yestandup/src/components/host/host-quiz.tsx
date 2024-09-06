@@ -3,9 +3,11 @@ import { QuizCard } from '../quiz-card/quiz-card.js';
 import { fetchQuizzes } from '../../services/api/quiz/quiz.js';
 
 import './host-quiz.scss';
+import { Outlet } from 'react-router';
 
 export const HostQuiz = () => {
   const [quizzes, setQuizzes] = useState([]);
+  console.log(quizzes);
 
   useEffect(() => {
     const fetchAndSetQuizzes = async () => {
@@ -28,6 +30,7 @@ export const HostQuiz = () => {
             quizzes.map((quiz) => <QuizCard quiz={quiz} key={quiz._id} />)}
         </div>
       </div>
+      <Outlet />
     </div>
   );
 };

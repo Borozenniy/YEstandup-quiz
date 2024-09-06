@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useParamns } from 'react-router-dom';
 import { Button } from '../../components/button/button';
 
 export const HostSession = ({ sessionId }) => {
@@ -35,16 +36,16 @@ export const HostSession = ({ sessionId }) => {
     <div>
       <div>
         <h1>Host Session</h1>
-        {session && <p>Session name: {session?.quiz.quizName}</p>}
+        {/*{session && <p>Session name: {session?.quiz.quizName}</p>}*/}
       </div>
       <div>
-        {session.participants.map((participant) => (
+        {/*{session.participants.map((participant) => (
           <ul>
             <li key={participant._id}>
               {participant.name}: {participant.score} points
             </li>
           </ul>
-        ))}
+        ))}*/}
       </div>
       <div>
         <Button label='End Session' mode='primary' onClick={endSession} />

@@ -13,7 +13,7 @@ export const GameSession = () => {
         `http://localhost:5000/session/get-session/${id}`
       );
       const data = await response.json();
-      setSession(data);
+      setSession(data.session);
     };
     fetchSession();
   }, [id]);
@@ -23,7 +23,13 @@ export const GameSession = () => {
       <div>
         <h1>Game Session ID: {id}</h1>
       </div>
-      <div></div>
+      <div>
+        <p>Teams</p>
+        {session?.participants &&
+          session.participants.map((participant) => (
+            <p key={participant._id}>{participant.name}</p>
+          ))}
+      </div>
     </div>
   );
 };

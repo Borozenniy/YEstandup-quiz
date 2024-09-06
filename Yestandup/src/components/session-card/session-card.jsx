@@ -1,15 +1,15 @@
 //import { useNavigate } from 'react-router-dom';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../button/button';
 import './session-card.scss';
 
-export const SessionCard = ({ session }) => {
+export const SessionCard = ({ session, size = 'medium' }) => {
   const navigate = useNavigate();
 
   console.log(session);
 
   const joinToSession = () => {
-    navigate(`/app/playquiz/session/${session._id}`);
+    navigate(`/app/join/session/${session._id}`);
   };
   return (
     <div className='session-card'>
