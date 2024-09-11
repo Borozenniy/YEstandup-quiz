@@ -31,7 +31,7 @@ export const HostGameSession = () => {
   const [participantsAmount, setParticipantsAmount] = useState(5);
   //const [sessionId, setSessionId] = useState('');
   const [participants, setParticipants] = useState(
-    Array(participantsAmount).fill({ name: '', score: 0 })
+    Array(participantsAmount).fill({ name: '', score: 0, answers: [] })
   );
 
   const addParticipant = (index, value) => {
@@ -39,6 +39,7 @@ export const HostGameSession = () => {
     updatedParticipants[index] = {
       name: value,
       score: 0,
+      answers: [],
     };
     setParticipants(updatedParticipants);
   };
@@ -92,6 +93,7 @@ export const HostGameSession = () => {
         ...Array(participantsAmount - participants.length).fill({
           name: '',
           score: 0,
+          answers: [],
         }),
       ]);
     }

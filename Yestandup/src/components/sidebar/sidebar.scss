@@ -1,0 +1,126 @@
+//.modal {
+//  position: fixed;
+//  left: 0;
+//  top: 0;
+//  right: 0;
+//  bottom: 0;
+//  background-color: gray;
+//  display: flex;
+//  align-items: center;
+//  justify-content: center;
+//  opacity: 0;
+//  transition: opacity 0.3s ease-in-out;
+//  pointer-events: none;
+
+//  .show {
+//    z-index: 99;
+//    pointer-events: visible;
+//    opacity: 1;
+//  }
+
+//  &__content {
+//  }
+//}
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--black-opacity50);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  opacity: 0;
+  pointer-events: none;
+
+  &.exit {
+    opacity: 0;
+  }
+  &.show {
+    opacity: 1;
+    pointer-events: visible;
+    z-index: 99;
+  }
+
+  &__close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    cursor: pointer;
+    color: var(--outline-variant);
+    font-size: 22px;
+    z-index: 3;
+    padding-left: 0px;
+  }
+
+  &__content {
+    max-width: 360px;
+    padding: 40px 22px 22px;
+    width: 360px;
+    background-color: var(--white);
+    border-radius: 8px;
+    overflow: scroll;
+    transition: all 0.5s ease-in-out;
+    transform: translateX(400px);
+    position: relative;
+    box-shadow: 0 10px 30px 0 var(--black);
+    height: 100vh;
+  }
+
+  //&.show {
+  //  opacity: 1;
+  //  pointer-events: visible;
+  //  z-index: 99;
+  //  .sidebar__content {
+  //    transform: translate(0px);
+  //  }
+  //}
+
+  //&.show {
+  //  opacity: 1;
+  //  pointer-events: visible;
+  //  z-index: 99;
+  //  &__content {
+  //    transform: translate(0px);
+  //  }
+
+  p {
+    //@include body-large;
+    color: var(--neutral-variant20);
+  }
+
+  li {
+    //@include body-large;
+    color: var(--neutral-variant20);
+  }
+
+  strong {
+    //@include body-large-bold;
+    color: var(--neutral-variant20);
+  }
+
+  .tabs-header__tab {
+    //@include title-medium;
+  }
+  //}
+
+  &__body {
+    margin-top: 0px;
+    border-radius: 8px;
+    overflow: scroll;
+    max-height: 80vh;
+  }
+}
+
+.body-no-scroll {
+  overflow: hidden;
+}
+
+.sidebar.show .sidebar__content {
+  transform: translateX(0);
+}
+
+.sidebar.exit .sidebar__content {
+  transform: translateX(400px);
+}

@@ -24,3 +24,43 @@
     background-color: transparent;
   }
 }
+
+.quiz-host {
+  height: 550px;
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgb(255, 255, 255);
+  margin-bottom: 30px;
+  th,
+  td {
+    border: 1px solid #000000; /* Колір ліній таблички */
+    text-align: center;
+    padding: 25px 30px;
+    font-size: 28px;
+    transition: transform 0.35s ease; /* Анімація збільшення */
+
+    &:hover:not(.visited-td) {
+      background-color: #90f096;
+      transform: scale(1.15);
+    }
+  }
+  th {
+    font-size: 50px;
+    color: #000000; /* Колір категорій */
+    text-align: left; /* Вирівнювання тексту вліво */
+    white-space: nowrap; /* Запобігає перенесенню тексту */
+    padding-left: 20px; /* Додатковий відступ зліва */
+  }
+  td.value {
+    max-width: 100%;
+    font-size: 60px;
+    /*color: #d69695; */
+    font-weight: semi-bold;
+    cursor: pointer;
+  }
+
+  //td:hover:not(.visited-td) {
+  //  background-color: #90f096;
+  //  transform: scale(1.15); /* Збільшення при hover */
+  //}
+}

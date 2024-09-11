@@ -1,4 +1,5 @@
 import { ModalProvider } from '../modal/modal-provider';
+import { SidebarProvider } from '../components/sidebar/sidebar-provider';
 import { Outlet } from 'react-router';
 import { Login } from '../auth/login';
 import { Header } from '../components/header/header';
@@ -9,9 +10,11 @@ export const Root = () => {
   return (
     <>
       <ModalProvider>
-        <Header />
-        <Outlet />
-        <Login />
+        <SidebarProvider>
+          <Header />
+          <Outlet />
+          <Login />
+        </SidebarProvider>
       </ModalProvider>
     </>
   );

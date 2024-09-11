@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { ModalContext } from '../../modal/modal-provider';
 import { Button } from '../button/button';
 import './table.scss';
 
 type TableProps = {
   table: any;
   tableParameters: TableParametersProps;
-  mode: 'create' | 'edit' | 'finish';
+  mode: 'create' | 'edit' | 'finish' | 'host';
   tableCell: TableCell;
   setTableCell: (tableCell: number[]) => void;
 };
@@ -35,14 +36,15 @@ export const Table = ({
   setTableCell,
 }: TableProps) => {
   console.log(table);
-
+  const { openModal } = useContext(ModalContext) as any;
   const [editedRow, setEditedRow] = useState<number | null>(null);
   const [editedColumn, setEditedColumn] = useState<number | null>(null);
   const [newCellValue, setNewCellValue] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const isTransparent = tableParameters.transparentBackground
-    ? 'quiz-table--transparent'
-    : '';
+  const isTransparent =
+    tableParameters && tableParameters.transparentBackground
+      ? 'quiz-table--transparent'
+      : '';
 
   const handleCellClick = (
     rowIndex: number,
@@ -95,6 +97,18 @@ export const Table = ({
   const isRowFullFilled = (row) => {
     return row.columns.every((column) => column.question && column.answer);
   };
+
+  //* Functions for modal
+
+  const showQuestionModal = (row, column) => {
+    openModal(
+      <div>
+        <h1>Question</h1>
+        <p>{table[row].columns[column].question}</p>
+      </div>
+    );
+  };
+  //* Functions for modal
 
   if (mode === 'create') {
     return (
@@ -191,6 +205,31 @@ export const Table = ({
       <div>
         <h1>Finish</h1>
       </div>
+    );
+  }
+  console.log(table);
+  if (mode === 'host') {
+    return (
+      <table className='quiz-host'>
+        <tbody>
+          {table.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              <td className='value' key={rowIndex}>
+                <span>{row.rowName}</span>
+              </td>
+              {row.columns.map((column, columnIndex) => (
+                <td
+                  className='value'
+                  key={columnIndex}
+                  onClick={() => showQuestionModal(rowIndex, columnIndex)}
+                >
+                  {column.name}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     );
   }
 };

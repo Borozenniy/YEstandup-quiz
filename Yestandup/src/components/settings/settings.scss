@@ -1,0 +1,25 @@
+.settings {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border-radius: 50px;
+
+  :hover {
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+    transform: scale(1.1);
+    background-color: #9fc6ea;
+    border-radius: 50px;
+  }
+  &__img {
+    padding: 5px;
+    width: 40px;
+  }
+}
+
+.check {
+  &__img {
+    padding-left: 10px;
+    width: 15px;
+  }
+}
