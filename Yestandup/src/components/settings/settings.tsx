@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { SidebarContext } from '../sidebar/sidebar-provider';
 import SettingsIcon from '../../assets/icons/settings.png';
 import CheckIcon from '../../assets/icons/check.png';
+import DisconnectIcon from '../../assets/icons/no-connection.png';
+import PendingIcon from '../../assets/icons/time-left.png';
 import './settings.scss';
 
 export const Settings = ({ participants }) => {
@@ -9,6 +11,28 @@ export const Settings = ({ participants }) => {
     useState(participants);
   const { openSidebar } = useContext(SidebarContext);
 
+  const participantStatus = (status) => {
+    switch (status) {
+      case 'connected':
+        return (
+          <>
+            <img className='check__img' src={`${CheckIcon}`} alt='' />;
+          </>
+        );
+
+      case 'disconnected':
+        return <img className='check__img' src={`${DisconnectIcon}`} alt='' />;
+      default:
+        return (
+          <>
+            <img className='check__img' src={`${PendingIcon}`} alt='' />;
+          </>
+        );
+    }
+  };
+  {
+    /*<a href="https://www.flaticon.com/free-icons/clock" title="clock icons">Clock icons created by Freepik - Flaticon</a>*/
+  }
   useEffect(() => {
     setParticipantsConnected(participants);
   }, [participants]);
@@ -20,17 +44,37 @@ export const Settings = ({ participants }) => {
           <h2>Settings</h2>
         </div>
         <div>
-          <p>Participants status:</p>
-          <ul>
+          <p>Participants:</p>
+          {/*<ul>
             {participantsConnected.map((participant) => (
               <li key={participant._id}>
-                {participant.name} - {participant.status}
-                {participant.status === 'connected' && (
-                  <img className='check__img' src={`${CheckIcon}`} alt='' />
-                )}
+                <p>
+                  {participant.name} - {participant.status}
+                  {participant.status === 'connected' && (
+                    <img className='check__img' src={`${CheckIcon}`} alt='' />
+                  )}
+                </p>
+                <p>Score: {participant.score}</p>
               </li>
             ))}
-          </ul>
+          </ul>*/}
+          <div className='participants-list'>
+            {participantsConnected.map((participant) => (
+              <div
+                className='participants-list__participant'
+                key={participant._id}
+              >
+                <p>
+                  {participant.name} - {participant.status}
+                  {participantStatus(participant.status)}
+                  {/*{participant.status === 'connected' && (
+                    <img className='check__img' src={`${CheckIcon}`} alt='' />
+                  )}*/}
+                </p>
+                <p>Score: {participant.score}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );

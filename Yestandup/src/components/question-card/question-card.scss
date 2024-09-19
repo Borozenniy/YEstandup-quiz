@@ -1,0 +1,11 @@
+.question-card {
+  display: flex;
+  justify-content: center;
+  width: 98vw;
+  height: 98vh;
+  z-index: 100;
+
+  &__wrapper {
+    margin: 30px;
+  }
+}

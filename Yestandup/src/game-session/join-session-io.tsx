@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useParams } from 'react-router-dom';
-import io from 'socket.io-client';
+import { HostSession } from './host-session/host-session';
+//import io from 'socket.io-client';
 import { Button } from '../components/button/button';
 import './join-session-io.scss';
 import { Table } from '../components/table/table';
 import { GameTable } from '../components/table/game-table';
 import { Settings } from '../components/settings/settings';
 
-const socket = io('http://localhost:5000', { path: '/app/join/session' });
+import { useSocket } from '../socket/socket-provider';
+//import { useSocket } from '../services/hooks/use-socket';
+
+//const socket = io('http://localhost:5000', { path: '/app/join/session' });
 
 export const JoinSessionIo = () => {
   const { id } = useParams(); // ID сесії
   const { user } = useAuth0();
   const [isHost, setIsHost] = useState(false);
+  const [role, setRole] = useState('participant');
   const [quiz, setQuiz] = useState([]); // Квіз
   //const [participant, setParticipant] = useState(null);
   const [session, setSession] = useState(null);
@@ -24,8 +29,55 @@ export const JoinSessionIo = () => {
   const [chosenQuestion, setChosenQuestion] = useState(null);
   const [activeQuestion, setActiveQuestion] = useState('');
   const [activeQuestionAnswer, setActiveQuestionAnswer] = useState('');
+  //* Socket
+  const socket = useSocket();
 
   // Функція перевірки, чи всі учасники підключені
+
+  console.log(selectedParticipant);
+
+  const hasParticipantAnswered = (currentParticipant: string) => {
+    const user = session.participants.find(
+      (participant) => participant.name === currentParticipant
+    );
+    if (user.answers.length > 0) {
+      const answeredQuestion = user.answers.find(
+        (answer) =>
+          answer.questionId === session.activeQuestion[0]._id.toString()
+      );
+      console.log(answeredQuestion);
+      //return answeredQuestions.every((answer) => answer === true);
+      return (
+        answeredQuestion?.questionId ===
+        session.activeQuestion[0]._id.toString()
+      );
+    }
+
+    //if (
+    //  user.answers.map(
+    //    (answer) =>
+    //      answer.questionId === session.activeQuestion[0]._id.toString()
+    //  )
+    //) {
+    //  console.log('Answered');
+    //  console.log(session.activeQuestion[0]._id);
+    //  return true;
+    //} else {
+    //  console.log('Not answered');
+    //  return false;
+    //}
+
+    //if (
+    //  user.answers.length > 0 &&
+    //  user.answers
+    //    .map((answer) => answer.questionId)
+    //    .includes(session.activeQuestion[0]._id)
+    //) {
+    //  return true;
+    //} else {
+    //  return false;
+    //}
+  };
   const everyParticipantIsConnected = () => {
     return session?.participants.every(
       (participant) => participant.status === 'connected'
@@ -33,7 +85,12 @@ export const JoinSessionIo = () => {
   };
   console.log(sessionStatus);
 
-  // Функція для початку гри
+  const chooseQuestion = (row, column) => {
+    setChosenQuestion(session.quiz.quiz[row].columns[column]);
+  };
+
+  // Функція для початку гри в сесії
+  //!HOST
   const startGame = () => {
     socket.emit('startSession', {
       sessionId: id,
@@ -45,7 +102,7 @@ export const JoinSessionIo = () => {
   };
 
   const joinSession = () => {
-    if (selectedParticipant) {
+    if (selectedParticipant && socket) {
       socket.emit('joinSession', {
         sessionId: id,
         participantName: selectedParticipant,
@@ -56,48 +113,68 @@ export const JoinSessionIo = () => {
   };
 
   useEffect(() => {
-    socket.emit('joinSession', {
-      sessionId: id,
-      participantName: selectedParticipant,
-      userEmail: user?.email,
-    });
+    if (socket) {
+      socket.emit('joinSession', {
+        sessionId: id,
+        participantName: selectedParticipant,
+        userEmail: user?.email,
+      });
 
-    //socket.emit('getParticipants', { sessionId: id });
-    //socket.emit('getSession', { sessionId: id });
+      //socket.emit('getParticipants', { sessionId: id });
+      //socket.emit('getSession', { sessionId: id });
 
-    //socket.on('sessionJoined', ({ session }) => {
-    //  setSession(session);
-    //  setParticipants(session.participants);
-    //  setQuiz(session.quiz.quiz);
-    //});
+      //socket.on('sessionJoined', ({ session }) => {
+      //  setSession(session);
+      //  setParticipants(session.participants);
+      //  setQuiz(session.quiz.quiz);
+      //});
 
-    //socket.on('sessionUpdated', ({ session }) => {
-    //  setSession(session);
-    //  setParticipants(session.participants);
-    //  setQuiz(session.quiz.quiz);
-    //});
+      //socket.on('sessionUpdated', ({ session }) => {
+      //  setSession(session);
+      //  setParticipants(session.participants);
+      //  setQuiz(session.quiz.quiz);
+      //});
 
-    socket.on('isHost', ({ isHost }) => setIsHost(isHost));
-    //socket.emit('getParticipants', { sessionId: id });
-    //socket.emit('getSession', { sessionId: id });
+      socket.on('isHost', ({ isHost }) => setIsHost(isHost));
+      //socket.emit('getParticipants', { sessionId: id });
+      //socket.emit('getSession', { sessionId: id });
 
-    socket.emit('getSession', { sessionId: id });
-    socket.on('updateSession', ({ session }) => {
-      setSession(session);
-    });
+      socket.emit('getSession', { sessionId: id });
+      socket.on('updateSession', ({ session }) => {
+        setSession(session);
+      });
 
-    //socket.emit('getParticipants', { sessionId: id });
-    //socket.on('updateParticipants', ({ participants, quizGame }) => {
-    //  setParticipants([...participants]);
-    //  setQuiz([...quizGame]);
-    //});
+      //socket.emit('getParticipants', { sessionId: id });
+      //socket.on('updateParticipants', ({ participants, quizGame }) => {
+      //  setParticipants([...participants]);
+      //  setQuiz([...quizGame]);
+      //});
 
-    return () => {
-      socket.off('isHost');
-      socket.off('updateSession');
-      //socket.off('sessionUpdated');
-    };
-  }, [id, user]);
+      return () => {
+        socket.off('isHost');
+        socket.off('updateSession');
+        //socket.off('sessionUpdated');
+      };
+    }
+  }, [id, user, socket]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('updateSession', ({ session }) => {
+        setSession(session);
+      });
+
+      return () => {
+        socket.off('updateSession');
+      };
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (session?.activeQuestion.length > 0) {
+      setActiveQuestion(session.activeQuestion[0]);
+    }
+  }, [session?.activeQuestion]);
 
   const submitAnswerOnActiveQuestion = () => {
     if (activeQuestionAnswer && selectedParticipant) {
@@ -109,12 +186,6 @@ export const JoinSessionIo = () => {
         questionId: session.activeQuestion[0]._id,
       });
     }
-  };
-
-  // Функція для вибору учасника і приєднання до сесії
-  console.log(chosenQuestion);
-  const chooseQuestion = (row, column) => {
-    setChosenQuestion(session.quiz.quiz[row].columns[column]);
   };
 
   useEffect(() => {
@@ -129,6 +200,8 @@ export const JoinSessionIo = () => {
   }, [chosenQuestion]);
 
   console.log(session);
+
+  //! HOST PART
 
   if (isHost && session?.status === 'pending') {
     return (
@@ -178,13 +251,14 @@ export const JoinSessionIo = () => {
       <div className='session'>
         <div className='session__content'>
           {/*<Table table={session.quiz.quiz} mode='host' />*/}
-          <GameTable quiz={session.quiz.quiz} chooseQuestion={chooseQuestion} />
+          <GameTable session={session} chooseQuestion={chooseQuestion} />
         </div>
         <Settings participants={session.participants} />
       </div>
     );
   }
 
+  //! PLAYER PART
   if (hasSelectedParticipant && session.status === 'pending') {
     return (
       <div className='session'>
@@ -239,17 +313,25 @@ export const JoinSessionIo = () => {
               <p>Wait till the host chooses a question</p>
             )}
           </div>
-          <input
-            type='text'
-            value={activeQuestionAnswer}
-            onChange={(e) => setActiveQuestionAnswer(e.target.value)}
-          />
-          <Button
-            label='Submit Answer'
-            mode='primary'
-            onClick={submitAnswerOnActiveQuestion}
-            disabled={!activeQuestionAnswer}
-          />
+          {hasParticipantAnswered(selectedParticipant) ? (
+            <>
+              <p>Відповідь прийнята, чекаємо на інших участників</p>
+            </>
+          ) : (
+            <>
+              <input
+                type='text'
+                value={activeQuestionAnswer}
+                onChange={(e) => setActiveQuestionAnswer(e.target.value)}
+              />
+              <Button
+                label='Submit Answer'
+                mode='primary'
+                onClick={submitAnswerOnActiveQuestion}
+                disabled={!activeQuestionAnswer}
+              />
+            </>
+          )}
         </div>
       </div>
     );

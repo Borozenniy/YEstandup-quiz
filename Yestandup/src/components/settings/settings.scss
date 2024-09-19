@@ -20,6 +20,20 @@
 .check {
   &__img {
     padding-left: 10px;
-    width: 15px;
+    width: 25px;
+  }
+}
+
+.participants-list {
+  padding: 10px;
+  &__participant {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border: 1px solid grey;
+    border-radius: 10px;
+  }
+  &__participant:hover {
+    background-color: #fce5b1;
   }
 }

@@ -34,7 +34,6 @@
   opacity: 0;
   transition: all 0.3s ease-in-out;
   pointer-events: none;
-
   &.show {
     opacity: 1;
     pointer-events: visible;
@@ -57,12 +56,10 @@
   }
 
   &__content {
-    max-width: 98%;
     position: relative;
     background-color: var(--white);
     border-radius: 8px;
     transition: all 0.3s ease-in-out;
-    max-width: 60vw;
 
     p {
       //@include body-large;
@@ -88,7 +85,7 @@
     margin-top: 0px;
     border-radius: 8px;
     overflow: scroll;
-    max-height: 80vh;
+    //max-height: 80vh;
   }
 }
 

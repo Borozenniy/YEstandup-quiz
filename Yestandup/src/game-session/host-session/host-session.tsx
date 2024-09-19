@@ -1,55 +1,107 @@
 import { useState, useEffect } from 'react';
-import { useParamns } from 'react-router-dom';
+import { useSocket } from '../../socket/socket-provider';
 import { Button } from '../../components/button/button';
+import { Table } from '../../components/table/table';
+import { GameTable } from '../../components/table/game-table';
+import { Settings } from '../../components/settings/settings';
 
-export const HostSession = ({ sessionId }) => {
-  const [session, setSession] = useState(null);
+import './host-session.scss';
 
-  const endSession = async () => {
-    const response = await fetch(
-      `http://localhost:5000/session/${sessionId}/end`,
-      {
-        method: 'POST',
-      }
+export const HostSession = ({ session }) => {
+  const [chosenQuestion, setChosenQuestion] = useState(null);
+  const { socket } = useSocket();
+  const everyParticipantIsConnected = () => {
+    return session?.participants.every(
+      (participant) => participant.status === 'connected'
     );
+  };
 
-    if (response.ok) {
-      console.log('Session ended');
-    } else {
-      throw new Error('Network response was not ok');
+  const chooseQuestion = (row, column) => {
+    setChosenQuestion(session.quiz.quiz[row].columns[column]);
+  };
+  /*
+   const chooseQuestion = (question) => {
+    socket.emit('chooseQuestion', question);
+  };
+  */
+
+  const startGame = () => {
+    if (socket) {
+      socket.emit('startSession', {
+        sessionId: id,
+      });
+      socket.on('sessionStarted', ({ session }) => {
+        setSession(session);
+        setSessionStatus('active');
+      });
     }
   };
 
   useEffect(() => {
-    const fetchSession = async () => {
-      const response = await fetch(
-        `http://localhost:5000/session/:${sessionId}`
-      );
+    // Логіка для хоста, наприклад, відстеження активного питання.
+    socket.on('sessionUpdate', (newSession) => {
+      // Оновлюємо стан, коли приходять зміни
+    });
 
-      const data = await response.json();
-      setSession(data);
+    return () => {
+      socket.off('sessionUpdate');
     };
+  }, [socket]);
 
-    fetchSession();
-  }, [sessionId]);
-  return (
-    <div>
-      <div>
-        <h1>Host Session</h1>
-        {/*{session && <p>Session name: {session?.quiz.quizName}</p>}*/}
+  if (session.status === 'pending') {
+    return (
+      <div className='session'>
+        <div className='session__content'>
+          <h1>Host: {user.name}</h1>
+          <div>
+            <p>List of participants:</p>
+            <ul>
+              {session &&
+                session.participants.map((participant) => (
+                  <li
+                    className={`${
+                      participant.status === 'connected' ? 'connected' : ''
+                    }`}
+                    key={participant._id}
+                  >
+                    <b>{participant.name}</b> : {participant.status}
+                  </li>
+                ))}
+              {/*{participants.map((participant) => (
+                <li
+                  className={`${
+                    participant.status === 'connected' ? 'connected' : ''
+                  }`}
+                  key={participant._id}
+                >
+                  <b>{participant.name}</b> : {participant.status}
+                </li>
+              ))}*/}
+            </ul>
+            {session.quiz.quiz.length > 0 && (
+              <Table table={session.quiz.quiz} mode='host' />
+            )}
+            <Button
+              label='Start Game'
+              mode='primary'
+              onClick={startGame}
+              disabled={!everyParticipantIsConnected()}
+            />
+          </div>
+        </div>
       </div>
-      <div>
-        {/*{session.participants.map((participant) => (
-          <ul>
-            <li key={participant._id}>
-              {participant.name}: {participant.score} points
-            </li>
-          </ul>
-        ))}*/}
+    );
+  }
+
+  if (session.status === 'active') {
+    return (
+      <div className='session'>
+        <div className='session__content'>
+          {/*<Table table={session.quiz.quiz} mode='host' />*/}
+          <GameTable session={session} chooseQuestion={chooseQuestion} />
+        </div>
+        <Settings participants={session.participants} />
       </div>
-      <div>
-        <Button label='End Session' mode='primary' onClick={endSession} />
-      </div>
-    </div>
-  );
+    );
+  }
 };

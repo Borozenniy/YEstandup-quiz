@@ -1,5 +1,6 @@
 import { ModalProvider } from '../modal/modal-provider';
 import { SidebarProvider } from '../components/sidebar/sidebar-provider';
+import { SocketProvider } from '../socket/socket-provider';
 import { Outlet } from 'react-router';
 import { Login } from '../auth/login';
 import { Header } from '../components/header/header';
@@ -9,13 +10,15 @@ import './root.scss';
 export const Root = () => {
   return (
     <>
-      <ModalProvider>
-        <SidebarProvider>
-          <Header />
-          <Outlet />
-          <Login />
-        </SidebarProvider>
-      </ModalProvider>
+      <SocketProvider>
+        <ModalProvider>
+          <SidebarProvider>
+            <Header />
+            <Outlet />
+            <Login />
+          </SidebarProvider>
+        </ModalProvider>
+      </SocketProvider>
     </>
   );
 };
